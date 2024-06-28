@@ -8,3 +8,4 @@ class sample{
      System.out.println("Devops");
      System.out.println("class");
   }
+}
