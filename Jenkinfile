@@ -1,46 +1,63 @@
 pipeline {
-					
-					agent any
-					
-					tools {
-						maven "apache-maven-3.9.8"
-					}
-					stages {
-						stage('Stage 1 - Checkout Code') {
-							steps {
-								//Get the code form GITHUB							
-                                git 'https://github.com/Nandhini0307/java.git'
-							}
-						}
-						stage('Stage 2 - Compile Code') {
-							steps {
-								//cmd to compile the code							
-                                bat "mvn compile"
-                                //sh "mvn compile"
-							}
-						}
-						stage('Stage 3 - Run Unit Tests') {
-							steps {
-								//cmd to run tests							
-                                bat "mvn test"
-							}
-						}
-						stage('Stage 4 -Create build') {
-							steps {
-								//cmd to create the build of project							
-                                bat "mvn testpackage"
-							}
-						}
-	
-					}
-					post{
-					    	failure {
-						//Send email to team about the failure
-						//emailext body: 'Jenkins build failed', subject: 'Jenkins build failed', to: 'test1@test.com'
-					
-					        echo "Email sent for Jenkins build failed"
-				         }
-					}
-				
-					
-				}
+    agent any
+
+    tools {
+        // Define the Maven tool to be used
+        maven 'Maven 3.8.1' // This should match the name given in the tool configuration
+    }
+
+    environment {
+        // Define the JDK to be used
+        JAVA_HOME = tool name: 'jdk-22', type: 'JDK' // This should match the JDK configuration in Jenkins
+        PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Clone the Git repository
+                git 'https://github.com/Nandhini0307/java.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Clean and build the Maven project
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Run Maven tests
+                sh 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                // Package the application
+                sh 'mvn package'
+            }
+        }
+        
+        stage('Verify Environment') {
+            steps {
+                // Print JAVA_HOME and Java version to verify the setup
+                sh 'echo $JAVA_HOME'
+                sh 'java -version'
+            }
+        }
+    }
+
+    post {
+        success {
+            // Archive the built artifacts
+            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+        }
+        always {
+            // Publish test results
+            junit '**/target/surefire-reports/*.xml'
+        }
+    }
+}
