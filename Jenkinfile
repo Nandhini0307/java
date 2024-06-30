@@ -5,7 +5,10 @@ pipeline {
         // Define the Maven tool to be used
         maven 'apache-maven-3.9.8' // This should match the name given in the tool configuration
     }
-
+ environment {
+        // Define the JDK to be used
+        PATH = "C:/Program Files/Java/jdk-22/bin:$PATH"
+    }
 
     stages {
         stage('Checkout') {
