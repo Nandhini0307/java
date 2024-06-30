@@ -6,11 +6,6 @@ pipeline {
         maven 'apache-maven-3.9.8' // This should match the name given in the tool configuration
     }
 
-    environment {
-        // Define the JDK to be used
-        JAVA_HOME = tool name: 'jdk-22', type: 'JDK' // This should match the JDK configuration in Jenkins
-        PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
-    }
 
     stages {
         stage('Checkout') {
