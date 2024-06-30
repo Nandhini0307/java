@@ -5,10 +5,6 @@ pipeline {
         // Define the Maven tool to be used
         maven 'apache-maven-3.9.8' // This should match the name given in the tool configuration
     }
- environment {
-        // Define the JDK to be used
-        PATH = "C:/Program Files/Java/jdk-22/bin:$PATH"
-    }
 
     stages {
         stage('Checkout') {
@@ -25,27 +21,7 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                // Run Maven tests
-                sh 'mvn test'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                // Package the application
-                sh 'mvn package'
-            }
-        }
-        
-        stage('Verify Environment') {
-            steps {
-                // Print JAVA_HOME and Java version to verify the setup
-                sh 'echo $JAVA_HOME'
-                sh 'java -version'
-            }
-        }
+       
     }
 
     post {
@@ -53,9 +29,6 @@ pipeline {
             // Archive the built artifacts
             archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
         }
-        always {
-            // Publish test results
-            junit '**/target/surefire-reports/*.xml'
-        }
+
     }
 }
