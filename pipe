@@ -5,24 +5,24 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 // Clone the repository containing the Java code
-                git 'https://github.com/Nandhini0307/jenkin.git'
+                git 'https://github.com/Nandhini0307/java.git'
             }
         }
         stage('Build') {
             steps {
                 // Compile the Java code
                 script {
-                    def javaHome = tool name: 'JDK11', type: 'JDK'
+                    def javaHome = tool name: 'jdk 22', type: 'JDK'
                     env.JAVA_HOME = "${javaHome}"
                     env.PATH = "${javaHome}/bin:${env.PATH}"
                 }
-                sh 'javac Hello.java'
+                sh 'javac Sample.java'
             }
         }
         stage('Test') {
             steps {
                 // Run the Java application to verify it works
-                sh 'java Hello'
+                sh 'java Sample'
             }
         }
     }
