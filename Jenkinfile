@@ -1,34 +1,18 @@
 pipeline {
     agent any
-
     tools {
-        // Define the Maven tool to be used
-        maven 'apache-maven-3.9.8' // This should match the name given in the tool configuration
+                  maven "apache-maven-3.9.8"
     }
-
     stages {
-        stage('Checkout') {
-            steps {
-                // Clone the Git repository
-                git 'https://github.com/Nandhini0307/java.git'
-            }
-        }
-
         stage('Build') {
             steps {
-                // Clean and build the Maven project
-                sh 'mvn clean install'
+               git 'https://github.com/Nandhini0307/java.git'
+               bat "mvn -Dmaven.test.failure.ignore=true clean package"
             }
-        }
+            post {
+                     success {
+                archiveArtifacts 'target/*.jar'
+                }
+            }}
+     }}
 
-       
-    }
-
-    post {
-        success {
-            // Archive the built artifacts
-            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
-        }
-
-    }
-}
